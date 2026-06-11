@@ -85,10 +85,11 @@ With **no allowlist and no registry check**, the node runs in **OPEN mode** — 
 
 ## The sovereign substrate
 
-This node is the third of three open pieces — **run any or all of them yourself:**
+This node is one piece of a small open stack — **run any or all of it yourself:**
 
 - **① Index** — what the chain holds (balances, UTXOs): [indelible-indexer](https://github.com/zcoolz/indelible-indexer)
 - **② Proofs** — that a tx is really on-chain (portable Merkle proofs from your own node)
 - **③ Overlay** — where services find each other (this node)
+- **④ Bridge** — the **[Relay Federation Bridge](https://github.com/zcoolz/relay-federation)**, an **SPV node** (a bridge *is* an SPV node) that ties it together: it reads chain truth from the indexer *and* advertises its services on this overlay — the service layer your apps and agents actually talk to.
 
 A floor everyone stands on, owned by no one.
