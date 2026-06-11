@@ -42,20 +42,24 @@ There is **no `/revoke` endpoint** — a published announcement is public, so a 
 ## 🔎 Don't trust, verify
 A lookup returns `{announcement, signature}` pairs. The trust is the **signature** plus an optional on-chain identity check — never the node, which only stores and serves. **You verify.** And because it's a *federation*, you query several nodes and union the results: a node that censors an honest provider is simply overruled by one that serves it.
 
-## 🏛️ How it fits
+## 🏛️ How it fits — the sovereign stack
 ```
-   service · bridge · agent        (advertises / discovers)
-              │  HTTP
-        ┌─────▼─────────┐
-        │   Indelible   │        ← this repo  (HTTP :8788)
-        │    Overlay    │
-        └───────────────┘
-        run one, or many — a federation no single hand controls
+                    your BSV node
+                       │  RPC + ZMQ
+            ┌──────────┴───────────┐
+      indelible-indexer       indelible-overlay
+      (chain truth + proofs)   (service discovery)  ← this repo (HTTP :8788)
+            └──────────┬───────────┘
+              relay-federation bridge      ← reads chain truth from the indexer,
+                       │  HTTP                advertises its services on THIS overlay
+              your apps · agents · wallets
 ```
-The overlay is one of three small, independent pieces you can run sovereignly:
-- **indelible-indexer** — chain truth + inclusion proofs *(separate repo)*.
-- **indelible-overlay** — this repo (service discovery).
-- a federation **bridge** — the service layer your apps talk to.
+The overlay is one piece of a small stack you run entirely yourself:
+- **[indelible-indexer](https://github.com/zcoolz/indelible-indexer)** — chain truth + inclusion proofs.
+- **indelible-overlay** — this repo: service discovery, where agents advertise + find each other.
+- **[relay-federation](https://github.com/zcoolz/relay-federation)** — the **Relay Federation Bridge**, which *is* the **SPV node** (a bridge and an SPV node are the same thing). A lightweight node — no full node of its own — that reads chain truth from the indexer *and* advertises its services on this overlay. It's the service layer your apps and agents actually talk to.
+
+Each runs independently and speaks plain HTTP — but the **bridge is what turns the pieces into a working stack.**
 
 Own the node · own the index · own the **directory**.
 
