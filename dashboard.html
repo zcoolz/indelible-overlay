@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Indelible Overlay — Directory</title>
+<style>
+  :root {
+    --bg: #0a0a0b; --panel: #141417; --panel2: #1c1c21; --line: #2a2a31;
+    --ink: #ece9e2; --dim: #8b8780; --lava: #ff7a18; --amber: #ffb547; --gold: #f3e3c3;
+    --ok: #6fcf7a; --warn: #ff7a18;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.5; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 26px; }
+  h1 { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 26px; letter-spacing: 2px;
+    margin: 0; color: var(--gold); text-transform: uppercase; }
+  h1 .lava { color: var(--lava); }
+  .tag { color: var(--dim); font-size: 14px; margin-top: 6px; }
+  .rooted { color: var(--amber); font-style: italic; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 20px 0 26px; }
+  input { background: var(--panel); border: 1px solid var(--line); color: var(--ink);
+    padding: 9px 12px; border-radius: 8px; font-size: 14px; min-width: 280px; font-family: ui-monospace, monospace; }
+  button { background: linear-gradient(180deg, var(--lava), #d8610f); color: #fff; border: 0;
+    padding: 9px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; }
+  button:hover { filter: brightness(1.08); }
+  .stats { display: flex; gap: 28px; flex-wrap: wrap; margin-left: auto; color: var(--dim); font-size: 13px; }
+  .stats b { color: var(--gold); font-family: ui-monospace, monospace; font-size: 16px; display: block; }
+  .net { color: var(--amber); }
+  .topic { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 16px; }
+  .topic h2 { font-family: ui-monospace, monospace; font-size: 16px; margin: 0 0 4px; color: var(--amber); word-break: break-all; }
+  .topic .count { color: var(--dim); font-size: 12px; margin-bottom: 12px; }
+  .prov { background: var(--panel2); border: 1px solid var(--line); border-left: 3px solid var(--lava);
+    border-radius: 8px; padding: 12px 14px; margin-top: 10px; }
+  .prov .ep { color: var(--gold); font-family: ui-monospace, monospace; font-size: 13px; word-break: break-all; }
+  .prov .meta { color: var(--dim); font-size: 12px; margin-top: 4px; font-family: ui-monospace, monospace; }
+  .caps { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .cap { background: #241a10; border: 1px solid #3a2a14; color: var(--amber);
+    padding: 3px 9px; border-radius: 999px; font-size: 12px; font-family: ui-monospace, monospace; }
+  .cap .price { color: var(--gold); }
+  .cap .free { color: var(--ok); }
+  .empty { color: var(--dim); text-align: center; padding: 48px; border: 1px dashed var(--line); border-radius: 12px; }
+  .err { color: var(--warn); }
+  footer { margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--dim); font-size: 13px; }
+  .trilogy { display: flex; gap: 14px; flex-wrap: wrap; margin: 14px 0; }
+  .piece { flex: 1; min-width: 200px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .piece h3 { margin: 0 0 4px; font-size: 14px; color: var(--gold); font-family: ui-monospace, monospace; }
+  .piece.here { border-color: var(--lava); }
+  .piece p { margin: 0; font-size: 12px; color: var(--dim); }
+  .piece a { color: var(--amber); text-decoration: none; }
+  .piece a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Indelible <span class="lava">Overlay</span></h1>
+    <div class="tag">The discovery layer — where sovereign agents find each other. <span class="rooted">Unbound, but rooted.</span></div>
+  </header>
+
+  <div class="bar">
+    <input id="node" value="http://localhost:8788" spellcheck="false" />
+    <button onclick="load()">Refresh</button>
+    <div class="stats">
+      <div>network<b id="s-net" class="net">—</b></div>
+      <div>topics<b id="s-topics">—</b></div>
+      <div>providers<b id="s-records">—</b></div>
+    </div>
+  </div>
+
+  <div id="out"><div class="empty">Point at a node and refresh.</div></div>
+
+  <footer>
+    <div>The Sovereign Substrate — three pieces, all open, all yours to run:</div>
+    <div class="trilogy">
+      <div class="piece"><h3>① Index</h3><p>What the chain holds — balances, UTXOs. <a href="https://github.com/zcoolz/indelible-indexer" target="_blank">indelible-indexer ↗</a></p></div>
+      <div class="piece"><h3>② Proofs</h3><p>That a tx is really on-chain — portable Merkle proofs from your own node.</p></div>
+      <div class="piece here"><h3>③ Overlay <span style="color:var(--lava)">← you are here</span></h3><p>Where services find each other — this directory. MIT, no gatekeeper.</p></div>
+    </div>
+    <div style="margin-top:10px">A floor everyone stands on, owned by no one. The node is an <b>untrusted directory</b> — every signature here is meant to be re-verified by the caller.</div>
+  </footer>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id)
+  const short = s => typeof s === 'string' && s.length > 18 ? s.slice(0, 10) + '…' + s.slice(-6) : s
+  const esc = s => String(s ?? '').replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]))
+  async function load () {
+    const base = $('node').value.replace(/\/+$/, '')
+    const out = $('out')
+    try {
+      const r = await fetch(base + '/directory')
+      if (!r.ok) throw new Error('HTTP ' + r.status)
+      const d = await r.json()
+      $('s-net').textContent = d.network || '—'
+      $('s-topics').textContent = d.stats?.topics ?? d.topics?.length ?? 0
+      $('s-records').textContent = d.records ?? '—'
+      const topics = Array.isArray(d.topics) ? d.topics : []
+      if (!topics.length) { out.innerHTML = '<div class="empty">No services advertised yet.</div>'; return }
+      out.innerHTML = topics.map(t => `
+        <div class="topic">
+          <h2>${esc(t.topic)}</h2>
+          <div class="count">${t.providers.length} provider${t.providers.length === 1 ? '' : 's'}</div>
+          ${t.providers.map(p => `
+            <div class="prov">
+              <div class="ep">${esc(p.endpoint)}</div>
+              <div class="meta">key ${esc(short(p.providerPubKey))} · expires ${esc((p.expiresAt || '').replace('T', ' ').replace(/\..*/, ''))}</div>
+              <div class="caps">${(p.capabilities || []).map(c => `
+                <span class="cap">${esc(c.name || c.route)} <span class="${c.price ? 'price' : 'free'}">${c.price ? c.price + ' sat' : 'free'}</span></span>`).join('')}</div>
+            </div>`).join('')}
+        </div>`).join('')
+    } catch (e) {
+      out.innerHTML = '<div class="empty err">Could not reach the node: ' + esc(e.message) + '</div>'
+      $('s-net').textContent = $('s-topics').textContent = $('s-records').textContent = '—'
+    }
+  }
+  // served by the node at GET / → point at where we're loaded from; standalone file:// → keep the localhost default
+  if (location.protocol === 'http:' || location.protocol === 'https:') $('node').value = location.origin
+  load()
+</script>
+</body>
+</html>

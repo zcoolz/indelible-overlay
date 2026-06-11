@@ -1,0 +1,13 @@
+# dependencies
+node_modules/
+
+# runtime data — the directory is in-memory and rebuilds from re-submits
+*.tmp.*
+
+# logs / local env / operator config
+*.log
+.env
+config.json
+
+# local scratch (demo / throwaway scripts)
+_*.mjs
